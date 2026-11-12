@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vexora Stream — Transparent OBS Browser Source</title>
+  <link rel="stylesheet" href="src/css/overlay.css">
+</head>
+<body>
+
+  <div class="overlay-viewport">
+    
+    <!-- 1. Realtime Goals HUD (Top Right) -->
+    <div class="overlay-goals-container" id="overlayGoalsContainer">
+      <div class="overlay-goal-item" id="giftGoalHud">
+        <div class="goal-hud-header">
+          <span id="giftGoalTitle">Target Koin Live</span>
+          <span id="giftGoalNumbers" style="font-family:'JetBrains Mono', monospace; color:#f59e0b;">0 / 1000</span>
+        </div>
+        <div class="goal-hud-bar-wrap">
+          <div class="goal-hud-fill" id="giftGoalFill" style="width: 0%;"></div>
+        </div>
+      </div>
+      
+      <div class="overlay-goal-item" id="likeGoalHud">
+        <div class="goal-hud-header">
+          <span id="likeGoalTitle">Target Likes</span>
+          <span id="likeGoalNumbers" style="font-family:'JetBrains Mono', monospace; color:#06b6d4;">0 / 5000</span>
+        </div>
+        <div class="goal-hud-bar-wrap">
+          <div class="goal-hud-fill" id="likeGoalFill" style="width: 0%; background: linear-gradient(90deg, #ec4899, #f43f5e);"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Spotlight Pinned Comment (Top Center) -->
+    <div class="spotlight-pin-container" id="spotlightContainer">
+      <div class="spotlight-pin-badge">📌 Tersemat</div>
+      <div class="spotlight-card">
+        <img class="spotlight-avatar" id="spotlightAvatar" src="" alt="">
+        <div class="spotlight-content">
+          <div class="spotlight-author">
+            <span class="spotlight-name" id="spotlightName">Penonton</span>
+            <span style="font-size: 10px; font-weight: 800; text-transform: uppercase;" id="spotlightPlatBadge">TikTok</span>
+          </div>
+          <div class="spotlight-text" id="spotlightText">Komentar tersemat di sini...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Gift & Video Reaction Alert Overlay (Center) -->
+    <div class="alert-popup-container" id="alertContainer">
+      <!-- Optional Video / GIF Reaction Screen -->
+      <div class="video-reaction-box" id="reactionVideoBox">
+        <img id="reactionImg" src="" alt="Video Reaction">
+      </div>
+
+      <div class="alert-card gift-alert" id="alertCard">
+        <div class="alert-icon-wrap" id="alertIcon">🎁</div>
+        <div class="alert-details">
+          <h4 id="alertTitle">NEW GIFT ALERT</h4>
+          <div class="alert-user" id="alertUser">Sultan Penonton</div>
+          <div class="alert-amount" id="alertAmount">10x Rose (10 Coins)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Custom Command Broadcast Banner (Bottom Right) -->
+    <div class="command-banner-container" id="commandBanner">
+      <div class="command-banner-header" id="cmdBannerHeader">BOT COMMAND: !DISCORD</div>
+      <div class="command-banner-text" id="cmdBannerText">Gabung ke Discord kita ya!</div>
+    </div>
+
+    <!-- 5. Floating Chat HUD (Bottom Left) -->
+    <div class="chat-hud-stack" id="chatHudStack">
+      <!-- Chat bubbles dinamis di-render via overlay.js -->
+    </div>
+
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="src/overlay/overlay.js"></script>
+</body>
+</html>

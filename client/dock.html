@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vexora Stream — OBS Custom Browser Dock (TikTok LIVE Style)</title>
+  <link rel="stylesheet" href="src/css/tiktokDock.css?v=3.0.4">
+</head>
+<body>
+
+  <!-- =========================================
+       1. TOP LIVE HEADER (Image 1 Header)
+  ========================================== -->
+  <header class="dock-header">
+    <!-- Muncul HANYA saat live streaming sudah terhubung -->
+    <div class="live-badge-group" id="liveBadgeGroup" style="display: none;">
+      <span class="live-badge">LIVE</span>
+      <span class="live-timer" id="liveTimer">00:00:00</span>
+    </div>
+
+    <!-- Tampil saat belum terhubung (Standby) -->
+    <div class="standby-badge-group" id="standbyBadgeGroup">
+      <span class="standby-dot"></span>
+      <span class="standby-text">Offline</span>
+    </div>
+
+    <div class="header-actions">
+      <!-- Toggle Preserved TikTok & YouTube Connect Bar -->
+      <button class="icon-btn active" id="toggleConnectPanelBtn" title="Tampilkan / Sembunyikan Input URL TikTok & YouTube">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+        </svg>
+      </button>
+
+      <!-- Lock Auto-scroll -->
+      <button class="icon-btn" id="lockScrollBtn" title="Kunci Auto-scroll Feed">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+      </button>
+
+      <!-- Settings / Audio / Voice Over TTS -->
+      <button class="icon-btn" id="settingsBtn" title="Pengaturan Suara & TTS">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- =========================================
+       2. PRESERVED CONNECTION STRIP (Image 2)
+       Sesuai permintaan: Input TikTok & YouTube tetap dipertahankan
+  ========================================== -->
+  <section class="connection-panel" id="connectionPanel">
+    <div class="connection-grid">
+      <!-- TikTok Connect Group -->
+      <div class="connect-box">
+        <input type="text" id="tkUsername" placeholder="TikTok @user" title="Ketik username TikTok Anda">
+        <button class="btn-hubungkan" id="tkConnectBtn">Hubungkan</button>
+      </div>
+
+      <!-- YouTube Connect Group -->
+      <div class="connect-box">
+        <input type="text" id="ytInput" placeholder="YouTube VideoID/@" title="Ketik ID Siaran / URL YouTube Live">
+        <button class="btn-hubungkan" id="ytConnectBtn">Hubungkan</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================
+       3. METRICS ROW (Split TikTok & YouTube Viewers)
+       [TK] 0   [YT] 0   👁️ 0   🎁 0   👤+ 0   🤍 0
+  ========================================== -->
+  <section class="metrics-row">
+    <!-- Penonton TikTok LIVE -->
+    <div class="metric-item metric-pill-tk" title="Penonton TikTok LIVE">
+      <svg viewBox="0 0 24 24" fill="currentColor" style="color: #25f4ee;">
+        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+      </svg>
+      <span id="metricTkViewers">0</span>
+    </div>
+
+    <!-- Penonton YouTube Live -->
+    <div class="metric-item metric-pill-yt" title="Penonton YouTube Live">
+      <svg viewBox="0 0 24 24" fill="currentColor" style="color: #ff2d55;">
+        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+      </svg>
+      <span id="metricYtViewers">0</span>
+    </div>
+
+    <!-- Total Penonton Gabungan -->
+    <div class="metric-item" title="Total Penonton Gabungan (TikTok + YouTube)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      </svg>
+      <span id="metricViewers">0</span>
+    </div>
+
+    <!-- Gifts -->
+    <div class="metric-item" title="Total Gift Masuk">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 12 20 22 4 22 4 12"></polyline>
+        <rect x="2" y="7" width="20" height="5"></rect>
+        <line x1="12" y1="22" x2="12" y2="7"></line>
+        <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+        <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+      </svg>
+      <span id="metricGifts">0</span>
+    </div>
+
+    <!-- Followers / Shares -->
+    <div class="metric-item" title="Pengikut Baru">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+        <circle cx="8.5" cy="7" r="4"></circle>
+        <line x1="20" y1="8" x2="20" y2="14"></line>
+        <line x1="23" y1="11" x2="17" y2="11"></line>
+      </svg>
+      <span id="metricFollowers">0</span>
+    </div>
+
+    <!-- Likes -->
+    <div class="metric-item" title="Total Likes">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+      </svg>
+      <span id="metricLikes">0</span>
+    </div>
+  </section>
+
+  <!-- =========================================
+       4. GOAL CARD (Image 1 Mascot Goal Card)
+       Reach 531 followers | 526/531 | 💎 x60
+  ========================================== -->
+  <section class="goal-card-wrapper">
+    <div class="goal-card">
+      <div class="goal-card-header">
+        <span class="goal-title" id="goalTitle">Reach 531 followers</span>
+        <span class="goal-time-badge">This week</span>
+      </div>
+
+      <div class="goal-mascot-row">
+        <!-- Cute Purple Demon Mascot Avatar -->
+        <div class="mascot-avatar" title="Target Mascot">
+          <svg class="mascot-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Horns -->
+            <path d="M22 36C18 20 28 12 32 15C34 22 28 32 26 36Z" fill="#581c87"/>
+            <path d="M78 36C82 20 72 12 68 15C66 22 72 32 74 36Z" fill="#581c87"/>
+            <!-- Head / Body -->
+            <rect x="15" y="22" width="70" height="66" rx="22" fill="#9333ea"/>
+            <rect x="18" y="25" width="64" height="60" rx="19" stroke="#c084fc" stroke-width="2" stroke-opacity="0.5"/>
+            <!-- Eyes -->
+            <ellipse cx="38" cy="48" rx="8" ry="7" fill="white"/>
+            <circle cx="40" cy="48" r="4.2" fill="#1e1b4b"/>
+            <circle cx="42" cy="46" r="1.5" fill="white"/>
+            <ellipse cx="62" cy="48" rx="8" ry="7" fill="white"/>
+            <circle cx="64" cy="48" r="4.2" fill="#1e1b4b"/>
+            <circle cx="66" cy="46" r="1.5" fill="white"/>
+            <!-- Eyebrows -->
+            <path d="M30 38L44 42" stroke="#4c1d95" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M70 38L56 42" stroke="#4c1d95" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- Smile / Smirk -->
+            <path d="M42 63C46 67 54 67 58 63" stroke="#2e1065" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <!-- Progress and Numbers -->
+        <div class="goal-progress-wrap">
+          <div class="goal-progress-bar-bg">
+            <div class="goal-progress-bar-fill" id="goalProgressBar" style="width: 0%;"></div>
+          </div>
+          <div class="goal-numbers-row">
+            <span class="goal-count-text" id="goalCount">0/50</span>
+            <span class="goal-diamonds-text" id="goalDiamonds">💎 x0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mini Gift Icons Row (0, 0, 0, 0, 0, 0) -->
+      <div class="mini-gift-track">
+        <div class="mini-gift-item" title="Rose">
+          <span class="gift-icon">🌹</span>
+          <span class="gift-count" id="countRose">0</span>
+        </div>
+        <div class="mini-gift-item" title="TikTok">
+          <span class="gift-icon">🎵</span>
+          <span class="gift-count" id="countTiktok">0</span>
+        </div>
+        <div class="mini-gift-item" title="GG">
+          <span class="gift-icon">🪅</span>
+          <span class="gift-count" id="countGg">0</span>
+        </div>
+        <div class="mini-gift-item" title="Heart">
+          <span class="gift-icon">💖</span>
+          <span class="gift-count" id="countHeart">0</span>
+        </div>
+        <div class="mini-gift-item" title="Donut">
+          <span class="gift-icon">🍩</span>
+          <span class="gift-count" id="countDonut">0</span>
+        </div>
+        <div class="mini-gift-item" title="Crown">
+          <span class="gift-icon">👑</span>
+          <span class="gift-count" id="countCrown">0</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================
+       5. RECENT GIFT PILL ALERTS (Image 1 Bubbles)
+       It's Ram's sent GG x1, TikTok x1, Rose x1
+  ========================================== -->
+  <section class="gift-alerts-container" id="giftAlertsContainer">
+    <!-- Di-render dinamis oleh tiktokDock.js -->
+  </section>
+
+  <!-- =========================================
+       6. CHAT STREAM (Image 1 Chat Style)
+       ▲2 Whennn: allooo kaa
+       ▲6 💖 it's Ram's 📛 No. 2: brp cp gell?
+       ▲1 sienna joined
+  ========================================== -->
+  <main class="chat-stream" id="chatStream">
+    <div class="empty-chat" id="emptyState">
+      <div class="icon">📡</div>
+      <p style="font-size: 11px;">Menunggu chat TikTok & YouTube...</p>
+    </div>
+  </main>
+
+  <!-- =========================================
+       7. BOTTOM BAR (Image 1 "Add comment")
+       Input pill dengan smiley & send button
+  ========================================== -->
+  <footer class="dock-bottom-bar">
+    <div class="comment-input-pill">
+      <input type="text" id="commentInput" placeholder="Add comment" autocomplete="off">
+      <button class="pill-action-btn" id="emojiQuickBtn" title="Reaksi Cepat Emoji">
+        😊
+      </button>
+    </div>
+    <button class="send-arrow-btn active" id="sendCommentBtn" title="Kirim Chat Host / Pengumuman">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="19" x2="12" y2="5"></line>
+        <polyline points="5 12 12 5 19 12"></polyline>
+      </svg>
+    </button>
+  </footer>
+
+  <!-- =========================================
+       8. SETTINGS DRAWER (TTS, Sound, Clear)
+  ========================================== -->
+  <div class="settings-drawer" id="settingsDrawer">
+    <h4>
+      <span>⚙️ Pengaturan Dock</span>
+      <span style="font-size: 10px; color: var(--tiktok-cyan);">Vexora v2.5</span>
+    </h4>
+
+    <div class="setting-row">
+      <span>🔊 Suara Alert Beep</span>
+      <input type="checkbox" id="soundToggle" checked>
+    </div>
+
+    <div class="setting-row">
+      <span>🗣️ Voice Over TTS</span>
+      <input type="checkbox" id="ttsToggle">
+    </div>
+
+    <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+      <span>Karakter Suara TTS:</span>
+      <div style="display: flex; gap: 4px; width: 100%;">
+        <select id="ttsVoiceSelect" style="flex: 1;">
+          <option value="persona_gadis">👩 Gadis (Wanita Lembut)</option>
+          <option value="persona_ardi">👨 Ardi (Pria Cool)</option>
+          <option value="persona_anime">🌸 Anime Chibi (Ceria)</option>
+          <option value="persona_robot">🤖 AI Robot / Cyber</option>
+          <option value="persona_radio">🎙️ Penyiar Radio</option>
+          <option value="persona_bocil">👶 Bocil Cilik (Imut)</option>
+          <option value="persona_sultan">👑 Sultan Santai</option>
+        </select>
+        <button class="btn-sm-action" id="testTtsBtn" title="Tes Suara">▶️</button>
+      </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; gap: 6px; margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px;">
+      <button class="btn-sm-action" id="clearFeedBtn" style="flex: 1;">
+        🗑️ Kosongkan Feed
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Notification Floating -->
+  <div class="toast-msg" id="toastNotice">Pemberitahuan</div>
+
+  <!-- Hidden counter elements for compatibility -->
+  <div style="display: none;">
+    <span id="tkViewerCount">0</span>
+    <span id="ytViewerCount">0</span>
+    <span id="totalLikesCount">0</span>
+    <span id="totalGiftsCount">0</span>
+    <span id="totalChatsCount">0</span>
+  </div>
+
+  <!-- Socket.IO & Dock Controller -->
+  <script src="src/js/socket.io.min.js"></script>
+  <script src="src/js/tiktokDock.js?v=3.0.4"></script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+{
+  "giftRules": [
+    {
+      "id": "rule_rose",
+      "name": "Rose Reaction",
+      "giftTrigger": "Rose",
+      "minCoins": 1,
+      "soundEffect": "chime",
+      "mediaUrl": "https://media.giphy.com/media/26AHONQ79FdWZhAI0/giphy.gif",
+      "alertText": "{user} mengirim {count}x Rose! Mawar cantik untuk live stream!",
+      "duration": 4,
+      "enabled": true
+    },
+    {
+      "id": "rule_paus",
+      "name": "Paus Menyelam / Big Gift",
+      "giftTrigger": "Paus",
+      "minCoins": 500,
+      "soundEffect": "fanfare",
+      "mediaUrl": "https://media.giphy.com/media/FaKV1cVKlVRxC/giphy.gif",
+      "alertText": "🚨 SULTAN ALERT! {user} mengirim {gift}! Terima kasih banyak!",
+      "duration": 7,
+      "enabled": true
+    },
+    {
+      "id": "rule_superchat",
+      "name": "YouTube Super Chat",
+      "giftTrigger": "superchat",
+      "minCoins": 1,
+      "soundEffect": "siren",
+      "mediaUrl": "https://media.giphy.com/media/5GoVLqeAOo6PK/giphy.gif",
+      "alertText": "💰 SUPER CHAT DITERIMA! {user} mendonasikan {amount}!",
+      "duration": 6,
+      "enabled": true
+    }
+  ],
+  "goals": {
+    "giftGoal": {
+      "enabled": true,
+      "title": "Target Koin Live",
+      "current": 20,
+      "target": 1000,
+      "unit": "Coins"
+    },
+    "likeGoal": {
+      "enabled": true,
+      "title": "Target Likes",
+      "current": 7,
+      "target": 5000,
+      "unit": "Likes"
+    },
+    "followerGoal": {
+      "enabled": false,
+      "title": "Target Follower Baru",
+      "current": 0,
+      "target": 50,
+      "unit": "Followers"
+    }
+  },
+  "commands": [
+    {
+      "id": "cmd_discord",
+      "trigger": "!discord",
+      "actionType": "banner",
+      "response": "Gabung ke Komunitas Discord kita di: discord.gg/vexorastream",
+      "cooldownSec": 5,
+      "enabled": true
+    },
+    {
+      "id": "cmd_sosmed",
+      "trigger": "!sosmed",
+      "actionType": "banner",
+      "response": "Follow TikTok & YouTube kita ya guys! Jangan lupa share siaran ini!",
+      "cooldownSec": 5,
+      "enabled": true
+    },
+    {
+      "id": "cmd_rules",
+      "trigger": "!rules",
+      "actionType": "banner",
+      "response": "Aturan Live: Saling menghormati, no SARA, no spam, santai dan nikmati!",
+      "cooldownSec": 5,
+      "enabled": true
+    }
+  ],
+  "moderation": {
+    "bannedWords": [
+      "kasar",
+      "anjing",
+      "babi",
+      "tolol",
+      "spamlink"
+    ],
+    "cooldownSeconds": 3,
+    "autoFilterProfanity": true,
+    "ttsMinCoins": 0
+  },
+  "overlayTheme": {
+    "stylePreset": "cyber",
+    "chatPosition": "bottom-left",
+    "fontSize": "14px",
+    "opacity": 0.9,
+    "showPlatformBadge": true,
+    "showGoals": true,
+    "showLeaderboard": true,
+    "chatFadeDelaySec": 20,
+    "giftAnim": "aurora"
+  }
+}

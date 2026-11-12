@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Build & Release Binaries (too large for GitHub 100MB limit)
+release/
+src-tauri/target/
+*.exe
+*.pdb
+*.msi
+*.7z
+
+# Temporary / Nested folders
+Vexora Stream/
+.DS_Store
+Thumbs.db
