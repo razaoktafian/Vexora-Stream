@@ -4,12 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vexora Stream — Transparent OBS Browser Source</title>
-  <link rel="stylesheet" href="src/css/overlay.css">
+  <link rel="stylesheet" href="/src/css/overlay.css?v=5.2.0">
 </head>
 <body>
 
-  <div class="overlay-viewport">
-    
+  <div class="overlay-viewport" id="overlayViewport">
+
+    <!-- 0. Dual Viewer Counter HUD (Top Left) -->
+    <div class="viewer-hud-container" id="viewerHudContainer">
+      <div class="viewer-hud-pill" id="viewerHudCard">
+        <span class="viewer-live-dot"></span>
+        <span class="viewer-live-text">LIVE</span>
+        <span class="viewer-sep"></span>
+        <span class="viewer-plat tk">TikTok: <strong id="hudTkViewers">0</strong></span>
+        <span class="viewer-sep"></span>
+        <span class="viewer-plat yt">YouTube: <strong id="hudYtViewers">0</strong></span>
+      </div>
+    </div>
+
     <!-- 1. Realtime Goals HUD (Top Right) -->
     <div class="overlay-goals-container" id="overlayGoalsContainer">
       <div class="overlay-goal-item" id="giftGoalHud">
@@ -21,7 +33,7 @@
           <div class="goal-hud-fill" id="giftGoalFill" style="width: 0%;"></div>
         </div>
       </div>
-      
+
       <div class="overlay-goal-item" id="likeGoalHud">
         <div class="goal-hud-header">
           <span id="likeGoalTitle">Target Likes</span>
@@ -33,11 +45,24 @@
       </div>
     </div>
 
+    <!-- 1B. Top Sultan Leaderboard HUD (Right Side below Goals) -->
+    <div class="leaderboard-hud-container" id="leaderboardOverlayContainer">
+      <div class="leaderboard-hud-card" id="leaderboardHudCard">
+        <div class="leaderboard-hud-header">
+          <span>👑 TOP SULTAN HARI INI</span>
+          <span class="lb-live-tag">LIVE RANK</span>
+        </div>
+        <div class="leaderboard-hud-list" id="leaderboardHudList">
+          <div class="lb-empty-row">Menunggu gift pertama...</div>
+        </div>
+      </div>
+    </div>
+
     <!-- 2. Spotlight Pinned Comment (Top Center) -->
     <div class="spotlight-pin-container" id="spotlightContainer">
       <div class="spotlight-pin-badge">📌 Tersemat</div>
-      <div class="spotlight-card">
-        <img class="spotlight-avatar" id="spotlightAvatar" src="" alt="">
+      <div class="spotlight-card" id="spotlightCard">
+        <img class="spotlight-avatar" id="spotlightAvatar" src="" alt="" onerror="this.style.display='none'">
         <div class="spotlight-content">
           <div class="spotlight-author">
             <span class="spotlight-name" id="spotlightName">Penonton</span>
@@ -48,7 +73,7 @@
       </div>
     </div>
 
-    <!-- 3. Gift & Video Reaction Alert Overlay (Center) -->
+    <!-- 3. Gift, SuperChat, Follow & Video Reaction Alert Overlay (Center) -->
     <div class="alert-popup-container" id="alertContainer">
       <!-- Optional Video / GIF Reaction Screen -->
       <div class="video-reaction-box" id="reactionVideoBox">
@@ -65,6 +90,9 @@
       </div>
     </div>
 
+    <!-- 3B. Floating Likes & Tap-Tap Particles Layer -->
+    <div class="likes-float-layer" id="likesFloatContainer"></div>
+
     <!-- 4. Custom Command Broadcast Banner (Bottom Right) -->
     <div class="command-banner-container" id="commandBanner">
       <div class="command-banner-header" id="cmdBannerHeader">BOT COMMAND: !DISCORD</div>
@@ -78,7 +106,7 @@
 
   </div>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="src/overlay/overlay.js"></script>
+  <script src="/src/js/socket.io.min.js"></script>
+  <script src="/src/overlay/overlay.js?v=5.2.0"></script>
 </body>
 </html>

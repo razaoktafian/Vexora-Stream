@@ -38,6 +38,15 @@ const assetsPath = path.join(__dirname, '../assets');
 app.use(express.static(clientPath));
 app.use('/assets', express.static(assetsPath));
 
+// Clean Route Aliases for OBS Dock & Modular Overlays
+app.get('/dock', (req, res) => {
+  res.sendFile(path.join(clientPath, 'dock.html'));
+});
+
+app.get(['/overlay', '/overlay/:widget'], (req, res) => {
+  res.sendFile(path.join(clientPath, 'overlay.html'));
+});
+
 // Ensure assets directories exist (hanya jika di luar asar)
 try {
   if (!__dirname.includes('app.asar')) {
@@ -97,6 +106,105 @@ queueManager.subscribe((type, data) => {
 });
 
 // REST API Endpoints
+
+/**
+ * Ping check untuk mengukur latensi real-time
+ */
+app.get('/api/ping', (req, res) => {
+  res.json({ ok: true, ts: Date.now() });
+});
+
+/**
+ * Toggle Dual Live Engine Active / Standby
+ */
+app.post('/api/engine/toggle', async (req, res) => {
+  const { active } = req.body;
+  const nextActive = typeof active === 'boolean' ? active : !rulesManager.getConfig().engineActive;
+
+  if (!nextActive) {
+    try { await tiktokConnector.disconnect(); } catch (_) {}
+    try { await youtubeConnector.disconnect(); } catch (_) {}
+  }
+
+  const updated = rulesManager.updateConfig({ engineActive: nextActive });
+  io.emit('config_update', updated);
+  res.json({ ok: true, engineActive: nextActive, config: updated });
+});
+
+/**
+ * Kirim pesan moderator/host ke feed & overlay
+ */
+app.post('/api/chat/send', (req, res) => {
+  const text = String(req.body?.text || '').trim();
+  if (!text) {
+    return res.status(400).json({ ok: false, message: 'Pesan tidak boleh kosong.' });
+  }
+
+  const hostEvent = {
+    id: generateEventId('host', 'chat'),
+    platform: 'host',
+    type: 'chat',
+    user: {
+      id: 'host_moderator',
+      username: 'moderator',
+      nickname: req.body?.user || 'Moderator (You)',
+      avatar: '',
+      badges: ['moderator', 'host']
+    },
+    content: {
+      text
+    },
+    timestamp: Date.now()
+  };
+
+  queueManager.addEvent(hostEvent);
+  res.json({ ok: true, event: hostEvent });
+});
+
+/**
+ * Test spesifik Multi Gift Rule ke OBS Overlay
+ */
+app.post('/api/rules/test', (req, res) => {
+  const { id } = req.body || {};
+  const rules = rulesManager.getConfig().giftRules || [];
+  const rule = rules.find((r) => String(r.id) === String(id)) || rules[0];
+  if (!rule) {
+    return res.status(404).json({ ok: false, message: 'Aturan gift tidak ditemukan.' });
+  }
+
+  const isSuperChat = String(rule.giftTrigger || '').toLowerCase() === 'superchat';
+  const testEvent = {
+    id: generateEventId(isSuperChat ? 'youtube' : 'tiktok', isSuperChat ? 'superchat' : 'gift'),
+    platform: isSuperChat ? 'youtube' : 'tiktok',
+    type: isSuperChat ? 'superchat' : 'gift',
+    hasRule: true,
+    user: {
+      id: 'sim_rule_sultan',
+      username: 'sultan_test',
+      nickname: 'Sultan_Reza',
+      avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100&h=100&fit=crop&crop=face',
+      badges: ['top_1', 'gifter']
+    },
+    content: {
+      text: `Simulasi ${rule.name}`,
+      gift: !isSuperChat ? {
+        name: rule.giftTrigger === '*' ? 'Paus' : rule.giftTrigger,
+        count: 1,
+        diamonds: Math.max(1, Number(rule.minCoins) || 100),
+        icon: 'https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f381.png'
+      } : undefined,
+      superchat: isSuperChat ? {
+        amount: 'Rp 50.000',
+        currency: 'IDR',
+        tierColor: '#e91e63'
+      } : undefined
+    },
+    timestamp: Date.now()
+  };
+
+  io.emit('rule_triggered', { rule, event: testEvent });
+  res.json({ ok: true, rule, event: testEvent });
+});
 
 /**
  * Status koneksi dan metrik live saat ini

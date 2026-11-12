@@ -129,6 +129,24 @@ class RulesManager {
         showGoals: true,
         showLeaderboard: true,
         chatFadeDelaySec: 20
+      },
+
+      // 6. Status Engine & Konfigurasi Widget Modular
+      engineActive: true,
+      ttsSettings: {
+        enabled: true,
+        voice: 'Gadis (Wanita Lembut)'
+      },
+      widgetConfigs: {
+        chat_box: { status: true, selectedTheme: 'dynamic-island', scale: 100, animation: 'spring-island' },
+        dock_chat: { status: true, selectedTheme: 'cyber-purple', scale: 100, animation: 'cyber-slide' },
+        spotlight_pin: { status: true, selectedTheme: 'dynamic-island', scale: 105, animation: 'spring-island' },
+        gift_alert: { status: true, selectedTheme: 'royal-gold', scale: 100, animation: 'elastic-bounce' },
+        follow_alert: { status: true, selectedTheme: 'cyber-purple', scale: 100, animation: 'cyber-slide' },
+        like_float: { status: true, selectedTheme: 'frosted-glass', scale: 100, animation: 'floating-glass' },
+        goal_bar: { status: true, selectedTheme: 'cyber-purple', scale: 100, animation: 'spring-island' },
+        viewer_hud: { status: true, selectedTheme: 'dynamic-island', scale: 100, animation: 'floating-glass' },
+        gift_rank: { status: false, selectedTheme: 'royal-gold', scale: 100, animation: 'elastic-bounce' }
       }
     };
 
