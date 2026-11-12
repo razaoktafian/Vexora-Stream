@@ -1,13 +1,17 @@
 # Dependencies
 node_modules/
 
-# Build & Release Binaries (too large for GitHub 100MB limit)
-release/
+# Build & Release Binaries (skip oversized Electron files)
 src-tauri/target/
-*.exe
+/*.exe
 *.pdb
 *.msi
 *.7z
+
+# Include only lightweight Native Rust executables in release/
+release/*
+!release/Vexora Stream (Native Rust).exe
+!release/Vexora Stream-Setup-1.0.0.exe
 
 # Temporary / Nested folders
 Vexora Stream/
